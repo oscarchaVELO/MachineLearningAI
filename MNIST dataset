@@ -1,0 +1,74 @@
+#End-to-End Linear Regression using MNIST dataset
+ #1. Import Libraries
+ from sklearn.datasets import fetch_openml
+ from sklearn.model_selection import train_test_split
+ from sklearn.linear_model import LogisticRegression
+ from sklearn import metrics
+ import numpy as np
+ import matplotlib.pyplot as plt
+ %matplotlib inline
+
+ #2. Load data from OpenML
+ mnist = fetch_openml('mnist_784')
+
+ #3A. Take a look at the dataset 
+ mnist
+ #3B. Examine the arrays
+ X=mnist['data']
+ y=mnist['target']
+ print (X.shape)
+ print (y.shape)
+
+ #4. take a look at the first element in the 'data' array.mnist.data[0]
+
+ #5. Visualize: Plot first five images
+ plt.figure(figsize=(20,4))
+ for index, (image, label) in enumerate(zip(mnist.data[:5], mnist.target[:5])):
+     plt.subplot(1, 5, index+1)
+     plt.imshow(np.reshape(image, (28,28)), cmap='gray')
+     plt.title("Number: %s" % label)
+
+     #6. Process the data
+ #split the data into training and testing (80-20)
+ X_train, X_test, y_train, y_test = train_test_split(mnist.data, mnist.target, test_size=0.2)
+
+ #7. Set up the Logistic Regression model
+ mdl = LogisticRegression(solver='lbfgs')
+ mdl.fit(X_train, y_train)
+ predictions = mdl.predict(X_test)
+ score = mdl.score(X_test, y_test)
+ x = round(score, 3)
+ print('Accuracy score:',x)
+
+ #8. Display label of first prediction
+ mdl.predict([X_test[0]])[0]
+
+ #9. Show the image and prediction for the first 4 indexed
+ plt.figure(figsize=(20,4))
+ for index in range(0,4):
+     plt.subplot(1, 5, index+1)
+     plt.imshow(np.reshape(X_test[index], (28,28)))
+     plt.title("Prediction: " + mdl.predict([X_test[index]])[0])
+
+     #10. Create the confusion matrix of the model
+ cm = metrics.confusion_matrix(y_test, predictions)
+ cm
+
+ #11. Plot confusion matrix
+ plt.figure(figsize=(9,9))
+ plt.imshow(cm, cmap='twilight')
+ plt.title('Confusion Matrix for MNIST Data')
+
+ plt.xticks(np.arange(10))
+ plt.yticks(np.arange(10))
+
+ plt.ylabel('Actual Label')
+ plt.xlabel('Predicted Label')
+
+ plt.colorbar()
+
+ width, height = cm.shape
+ for x in range(width):
+     for y in range(height):
+         plt.annotate(str(cm[x][y]), xy=(y,x),horizontalalignment='center', verticalalignment='center')
+
