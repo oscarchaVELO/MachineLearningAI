@@ -1,0 +1,35 @@
+# Import packages
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+sns.set()
+
+df = pd.read_csv('multiTimeline.csv', skiprows=1)
+df.head()
+
+df.columns = ['month','finance', 'year(Search)', 'popularity']
+df.head()
+
+df.month = pd.to_datetime(df.month)
+df.set_index('month', inplace=True)
+
+df.head
+
+df[['finance']].plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.title('Finance Google Trends', fontsize=20)
+plt.xlabel('Year', fontsize=20)
+plt.ylabel('Popularity', fontsize=20);
+
+df.plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+df.corr()
+
+finance = df[['finance']]
+
+pd.plotting.autocorrelation_plot(finance);
+
+finance.rolling(12).mean().plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
