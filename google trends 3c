@@ -1,0 +1,90 @@
+Last login: Wed Jan 20 20:54:41 on console
+/Users/chacha/Desktop/anaconda3/bin/jupyter_mac.command ; exit;
+(base) Oscars-MacBook-Pro:~ chacha$ /Users/chacha/Desktop/anaconda3/bin/jupyter_mac.command ; exit;
+[I 00:31:35.517 NotebookApp] Writing notebook server cookie secret to /Users/chacha/Library/Jupyter/runtime/notebook_cookie_secret
+[I 00:31:37.026 NotebookApp] JupyterLab extension loaded from /Users/chacha/Desktop/anaconda3/lib/python3.8/site-packages/jupyterlab
+[I 00:31:37.026 NotebookApp] JupyterLab application directory is /Users/chacha/Desktop/anaconda3/share/jupyter/lab
+[I 00:31:37.031 NotebookApp] Serving notebooks from local directory: /Users/chacha
+[I 00:31:37.032 NotebookApp] Jupyter Notebook 6.1.4 is running at:
+[I 00:31:37.034 NotebookApp] http://localhost:8888/?token=f9afb2e2aaee4d56b0db5e2ad03617399bc98d4ff0d6bfe7
+[I 00:31:37.034 NotebookApp]  or http://127.0.0.1:8888/?token=f9afb2e2aaee4d56b0db5e2ad03617399bc98d4ff0d6bfe7
+[I 00:31:37.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 00:31:37.051 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///Users/chacha/Library/Jupyter/runtime/nbserver-68662-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/?token=f9afb2e2aaee4d56b0db5e2ad03617399bc98d4ff0d6bfe7
+     or http://127.0.0.1:8888/?token=f9afb2e2aaee4d56b0db5e2ad03617399bc98d4ff0d6bfe7
+
+# Import packages
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+sns.set()
+
+df = pd.read_csv('data/multiTimeline.csv', skiprows=1)
+df.head()
+
+df.columns = ['month', 'diet', 'gym', 'finance']
+df.head()
+
+df.month = pd.to_datetime(df.month)
+df.set_index('month', inplace=True)
+
+df.head()
+
+df.plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+df[['diet']].plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+diet = df[['diet']]
+diet.rolling(12).mean().plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+gym = df[['gym']]
+gym.rolling(12).mean().plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+df_rm = pd.concat([diet.rolling(12).mean(), gym.rolling(12).mean()], axis=1)
+df_rm.plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+diet.diff().plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+
+from sklearn import datasets
+iris = datasets.load_iris()
+df_iris = pd.DataFrame(data= np.c_[iris['data'], iris['target']],
+                     columns= iris['feature_names'] + ['target'])
+df_iris.head()
+
+
+sns.lmplot(x='sepal length (cm)', y='sepal width (cm)', fit_reg=False, data=df_iris);
+
+sns.lmplot(x='sepal length (cm)', y='sepal width (cm)', fit_reg=False, data=df_iris, hue='target');
+
+df_iris.corr()
+
+df_iris.groupby(['target']).corr()
+
+df.plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+df.corr()
+
+df.diff().plot(figsize=(20,10), linewidth=5, fontsize=20)
+plt.xlabel('Year', fontsize=20);
+
+df.diff().corr()
+
+pd.plotting.autocorrelation_plot(diet);
+
+
+
+
